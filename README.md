@@ -18,8 +18,17 @@ composer require amdad121/record-activity-laravel
 ## Usage
 
 ```php
-$recordActivityLaravel = new AmdadulHaq\RecordActivityLaravel();
-echo $recordActivityLaravel->echoPhrase('Hello, AmdadulHaq!');
+<?php
+
+namespace App\Models;
+
+use AmdadulHaq\RecordActivity\RecordActivity;
+// ...
+
+class User extends Authenticatable
+{
+    use RecordActivity;
+}
 ```
 
 ## Testing
