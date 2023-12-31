@@ -4,33 +4,30 @@ declare(strict_types=1);
 
 namespace AmdadulHaq\RecordActivity;
 
-use Illuminate\Support\Facades\Auth;
-
 trait RecordActivity
 {
-    public static function bootRecordActivity()
+    public static function bootRecordActivity(): void
     {
+        // updating created_by and updated_by when model is created
         static::creating(function ($model) {
-            $user = Auth::user();
-            if ($user) {
-                $model->created_by = $user->id;
-                $model->save();
+            if (! $model->isDirty('created_by')) {
+                $model->created_by = auth()->user()->id;
+            }
+
+            if (! $model->isDirty('updated_by')) {
+                $model->updated_by = auth()->user()->id;
             }
         });
 
         static::updating(function ($model) {
-            $user = Auth::user();
-            if ($user) {
-                $model->updated_by = $user->id;
-                $model->save();
+            if (! $model->isDirty('updated_by')) {
+                $model->updated_by = auth()->user()->id;
             }
         });
 
         static::deleting(function ($model) {
-            $user = Auth::user();
-            if ($user) {
-                $model->deleted_by = $user->id;
-                $model->save();
+            if (! $model->isDirty('deleted_by')) {
+                $model->deleted_by = auth()->user()->id;
             }
         });
     }
