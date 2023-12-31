@@ -27,7 +27,7 @@ Schema::create('users', function (Blueprint $table) {
 });
 ```
 
-Now this traits add on your model.
+Now this traits add on your model and add fillable property.
 
 ```php
 <?php
@@ -40,6 +40,13 @@ use AmdadulHaq\RecordActivity\RecordActivity;
 class User extends Model
 {
     use CreatedByAndUpdatedBy, DeletedBy;
+
+    protected $fillable = [
+        // ...
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
 }
 ```
 
