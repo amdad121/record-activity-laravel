@@ -17,6 +17,18 @@ composer require amdad121/record-activity-laravel
 
 ## Usage
 
+Open your migration file and add this table column. both are optional.
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    // ...
+    $table->withCreatedByAndUpdatedBy();
+    $table->withDeletedBy();
+});
+```
+
+Now this traits add on your model.
+
 ```php
 <?php
 
@@ -25,10 +37,16 @@ namespace App\Models;
 use AmdadulHaq\RecordActivity\RecordActivity;
 // ...
 
-class User extends Authenticatable
+class User extends Model
 {
-    use RecordActivity;
+    use CreatedByAndUpdatedBy, DeletedBy;
 }
+```
+
+Now run the migrations with this command.
+
+```bash
+php artisan migrate
 ```
 
 ## Testing
