@@ -22,8 +22,8 @@ Open your migration file and add this table column. both are optional.
 ```php
 Schema::create('users', function (Blueprint $table) {
     // ...
-    $table->withCreatedByAndUpdatedBy();
-    $table->withDeletedBy();
+    $table->withHasCreatorAndUpdater();
+    $table->withHasDeleter();
 });
 ```
 
@@ -39,7 +39,7 @@ use AmdadulHaq\RecordActivity\RecordActivity;
 
 class User extends Model
 {
-    use CreatedByAndUpdatedBy, DeletedBy;
+    use HasCreatorAndUpdater, HasDeleter;
 
     protected $fillable = [
         // ...
