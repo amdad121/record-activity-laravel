@@ -17,6 +17,7 @@ trait HasDeleter
 
     // Arrays to include/exclude tracking of certain events
     protected array $trackInclude = ['deleting'];
+
     protected array $trackExclude = [];
 
     public static function bootHasDeleter(): void
