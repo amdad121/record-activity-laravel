@@ -11,14 +11,17 @@ trait HasCreatorAndUpdater
 {
     // Default column names, can be overridden in the model
     protected string $createdByColumn = 'created_by';
+
     protected string $updatedByColumn = 'updated_by';
 
     // Default relationship names, can be overridden in the model
     protected string $creatorRelation = 'creator';
+
     protected string $updaterRelation = 'updater';
 
     // Arrays to include/exclude tracking of certain events
     protected array $trackInclude = ['creating', 'updating'];
+
     protected array $trackExclude = [];
 
     public static function bootHasCreatorAndUpdater(): void
