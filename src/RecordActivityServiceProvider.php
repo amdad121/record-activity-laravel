@@ -24,7 +24,7 @@ class RecordActivityServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         // Extend the Blueprint class to add custom methods
-        Blueprint::macro('withCreatedByAndUpdatedBy', function () {
+        Blueprint::macro('withHasCreatorAndUpdater', function () {
             $this->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete();
             $this->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();
         });
@@ -34,7 +34,7 @@ class RecordActivityServiceProvider extends PackageServiceProvider
         });
 
         // Extend the Blueprint class to add custom drop methods
-        Blueprint::macro('dropCreatedByAndUpdatedBy', function () {
+        Blueprint::macro('dropHasCreatorAndUpdater', function () {
             $this->dropForeign(['created_by', 'updated_by']);
             $this->dropColumn(['created_by', 'updated_by']);
         });
