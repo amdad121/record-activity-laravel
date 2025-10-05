@@ -17,29 +17,35 @@ class RecordActivityServiceProvider extends PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
-        $package
-            ->name('record-activity-laravel');
+        $package->name('record-activity-laravel');
     }
 
     public function packageRegistered(): void
     {
-        // Extend the Blueprint class to add custom methods
+        // Add created_by and updated_by columns
         Blueprint::macro('withHasCreatorAndUpdater', function () {
+            /** @var Blueprint $this */
             $this->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete();
             $this->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();
         });
 
-        Blueprint::macro('withDeletedBy', function () {
+        // Add deleted_by column
+        Blueprint::macro('withHasDeleter', function () {
+            /** @var Blueprint $this */
             $this->foreignId('deleted_by')->nullable()->constrained('users')->cascadeOnDelete();
         });
 
-        // Extend the Blueprint class to add custom drop methods
+        // Drop created_by and updated_by columns
         Blueprint::macro('dropHasCreatorAndUpdater', function () {
-            $this->dropForeign(['created_by', 'updated_by']);
+            /** @var Blueprint $this */
+            $this->dropForeign(['created_by']);
+            $this->dropForeign(['updated_by']);
             $this->dropColumn(['created_by', 'updated_by']);
         });
 
-        Blueprint::macro('dropDeletedBy', function () {
+        // Drop deleted_by column
+        Blueprint::macro('dropHasDeleter', function () {
+            /** @var Blueprint $this */
             $this->dropForeign(['deleted_by']);
             $this->dropColumn(['deleted_by']);
         });

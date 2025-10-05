@@ -34,7 +34,8 @@ Now this traits add on your model and add fillable property.
 
 namespace App\Models;
 
-use AmdadulHaq\RecordActivity\RecordActivity;
+use AmdadulHaq\RecordActivity\HasCreatorAndUpdater;
+use AmdadulHaq\RecordActivity\HasDeleter;
 // ...
 
 class User extends Model
