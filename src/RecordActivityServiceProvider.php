@@ -23,20 +23,20 @@ class RecordActivityServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         // Add created_by and updated_by columns
-        Blueprint::macro('withHasCreatorAndUpdater', function () {
+        Blueprint::macro('withCreatorAndUpdater', function () {
             /** @var Blueprint $this */
             $this->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete();
             $this->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();
         });
 
         // Add deleted_by column
-        Blueprint::macro('withHasDeleter', function () {
+        Blueprint::macro('withDeleter', function () {
             /** @var Blueprint $this */
             $this->foreignId('deleted_by')->nullable()->constrained('users')->cascadeOnDelete();
         });
 
         // Drop created_by and updated_by columns
-        Blueprint::macro('dropHasCreatorAndUpdater', function () {
+        Blueprint::macro('dropCreatorAndUpdater', function () {
             /** @var Blueprint $this */
             $this->dropForeign(['created_by']);
             $this->dropForeign(['updated_by']);
@@ -44,7 +44,7 @@ class RecordActivityServiceProvider extends PackageServiceProvider
         });
 
         // Drop deleted_by column
-        Blueprint::macro('dropHasDeleter', function () {
+        Blueprint::macro('dropDeleter', function () {
             /** @var Blueprint $this */
             $this->dropForeign(['deleted_by']);
             $this->dropColumn(['deleted_by']);
