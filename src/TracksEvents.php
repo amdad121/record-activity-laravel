@@ -16,10 +16,13 @@ trait TracksEvents
             return false;
         }
 
-        if (in_array($event, $this->trackInclude, true)) {
-            return true;
-        }
+        return in_array($event, $this->trackInclude, true);
+    }
 
-        return false;
+    protected function getUserModelClass(): string
+    {
+        return property_exists($this, 'userModel')
+            ? $this->userModel
+            : config('auth.providers.users.model', 'App\\Models\\User');
     }
 }

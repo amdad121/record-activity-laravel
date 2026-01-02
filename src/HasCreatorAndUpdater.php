@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AmdadulHaq\RecordActivity;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,13 +23,11 @@ trait HasCreatorAndUpdater
     {
         $instance = new static;
 
-        // Configure which events to track
         $instance->trackInclude = ['creating', 'updating'];
         $instance->trackExclude = [];
 
-        // Handle creating event
         if ($instance->shouldTrackEvent('creating')) {
-            static::creating(function (Model $model) use ($instance) {
+            static::creating(function (Model $model) use ($instance): void {
                 if (Auth::check()) {
                     $userId = Auth::id();
 
@@ -45,9 +42,8 @@ trait HasCreatorAndUpdater
             });
         }
 
-        // Handle updating event
         if ($instance->shouldTrackEvent('updating')) {
-            static::updating(function (Model $model) use ($instance) {
+            static::updating(function (Model $model) use ($instance): void {
                 if (Auth::check()) {
                     $userId = Auth::id();
 
@@ -71,11 +67,11 @@ trait HasCreatorAndUpdater
 
     public function creator()
     {
-        return $this->belongsTo(User::class, $this->getCreatedByColumn());
+        return $this->belongsTo($this->getUserModelClass(), $this->getCreatedByColumn());
     }
 
     public function updater()
     {
-        return $this->belongsTo(User::class, $this->getUpdatedByColumn());
+        return $this->belongsTo($this->getUserModelClass(), $this->getUpdatedByColumn());
     }
 }

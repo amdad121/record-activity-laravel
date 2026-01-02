@@ -5,38 +5,27 @@ declare(strict_types=1);
 namespace AmdadulHaq\RecordActivity;
 
 use Illuminate\Database\Schema\Blueprint;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class RecordActivityServiceProvider extends PackageServiceProvider
+class RecordActivityServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
-    {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
-        $package->name('record-activity-laravel');
-    }
-
-    public function packageRegistered(): void
+    public function register(): void
     {
         // Add created_by and updated_by columns
-        Blueprint::macro('withCreatorAndUpdater', function () {
+        Blueprint::macro('withCreatorAndUpdater', function (): void {
             /** @var Blueprint $this */
             $this->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete();
             $this->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();
         });
 
         // Add deleted_by column
-        Blueprint::macro('withDeleter', function () {
+        Blueprint::macro('withDeleter', function (): void {
             /** @var Blueprint $this */
             $this->foreignId('deleted_by')->nullable()->constrained('users')->cascadeOnDelete();
         });
 
         // Drop created_by and updated_by columns
-        Blueprint::macro('dropCreatorAndUpdater', function () {
+        Blueprint::macro('dropCreatorAndUpdater', function (): void {
             /** @var Blueprint $this */
             $this->dropForeign(['created_by']);
             $this->dropForeign(['updated_by']);
@@ -44,10 +33,15 @@ class RecordActivityServiceProvider extends PackageServiceProvider
         });
 
         // Drop deleted_by column
-        Blueprint::macro('dropDeleter', function () {
+        Blueprint::macro('dropDeleter', function (): void {
             /** @var Blueprint $this */
             $this->dropForeign(['deleted_by']);
             $this->dropColumn(['deleted_by']);
         });
+    }
+
+    public function boot(): void
+    {
+        //
     }
 }

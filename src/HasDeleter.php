@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AmdadulHaq\RecordActivity;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,13 +19,11 @@ trait HasDeleter
     {
         $instance = new static;
 
-        // Configure which events to track
         $instance->trackInclude = ['deleting'];
         $instance->trackExclude = [];
 
-        // Handle deleting (soft delete)
         if ($instance->shouldTrackEvent('deleting')) {
-            static::deleting(function (Model $model) use ($instance) {
+            static::deleting(function (Model $model) use ($instance): void {
                 if (method_exists($model, 'runSoftDelete') && Auth::check()) {
                     $userId = Auth::id();
 
@@ -47,6 +44,6 @@ trait HasDeleter
 
     public function deleter()
     {
-        return $this->belongsTo(User::class, $this->getDeletedByColumn());
+        return $this->belongsTo($this->getUserModelClass(), $this->getDeletedByColumn());
     }
 }
