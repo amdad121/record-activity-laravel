@@ -58,9 +58,17 @@ it('can use dropCreatorAndUpdater blueprint macro', function (): void {
         $table->timestamps();
     });
 
-    Schema::table('test_table', function (Blueprint $table): void {
-        $table->dropCreatorAndUpdater();
-    });
+    try {
+        Schema::table('test_table', function (Blueprint $table): void {
+            $table->dropCreatorAndUpdater();
+        });
+    } catch (BadMethodCallException $badMethodCallException) {
+        if (str_contains($badMethodCallException->getMessage(), 'SQLite')) {
+            $this->markTestSkipped('SQLite does not support dropping foreign keys');
+        }
+
+        throw $badMethodCallException;
+    }
 
     $columns = Schema::getColumnListing('test_table');
 
@@ -82,9 +90,17 @@ it('can use dropDeleter blueprint macro', function (): void {
         $table->timestamps();
     });
 
-    Schema::table('test_table', function (Blueprint $table): void {
-        $table->dropDeleter();
-    });
+    try {
+        Schema::table('test_table', function (Blueprint $table): void {
+            $table->dropDeleter();
+        });
+    } catch (BadMethodCallException $badMethodCallException) {
+        if (str_contains($badMethodCallException->getMessage(), 'SQLite')) {
+            $this->markTestSkipped('SQLite does not support dropping foreign keys');
+        }
+
+        throw $badMethodCallException;
+    }
 
     $columns = Schema::getColumnListing('test_table');
 
