@@ -21,38 +21,29 @@ trait HasCreatorAndUpdater
 
     public static function bootHasCreatorAndUpdater(): void
     {
-        $instance = new static;
+        static::creating(function (Model $model): void {
+            if (Auth::check()) {
+                $userId = Auth::id();
 
-        $instance->trackInclude = ['creating', 'updating'];
-        $instance->trackExclude = [];
-
-        if ($instance->shouldTrackEvent('creating')) {
-            static::creating(function (Model $model) use ($instance): void {
-                if (Auth::check()) {
-                    $userId = Auth::id();
-
-                    if (! $model->isDirty($instance->getCreatedByColumn())) {
-                        $model->{$instance->getCreatedByColumn()} = $userId;
-                    }
-
-                    if (! $model->isDirty($instance->getUpdatedByColumn())) {
-                        $model->{$instance->getUpdatedByColumn()} = $userId;
-                    }
+                if (! $model->isDirty($model->getCreatedByColumn())) {
+                    $model->{$model->getCreatedByColumn()} = $userId;
                 }
-            });
-        }
 
-        if ($instance->shouldTrackEvent('updating')) {
-            static::updating(function (Model $model) use ($instance): void {
-                if (Auth::check()) {
-                    $userId = Auth::id();
-
-                    if (! $model->isDirty($instance->getUpdatedByColumn())) {
-                        $model->{$instance->getUpdatedByColumn()} = $userId;
-                    }
+                if (! $model->isDirty($model->getUpdatedByColumn())) {
+                    $model->{$model->getUpdatedByColumn()} = $userId;
                 }
-            });
-        }
+            }
+        });
+
+        static::updating(function (Model $model): void {
+            if (Auth::check()) {
+                $userId = Auth::id();
+
+                if (! $model->isDirty($model->getUpdatedByColumn())) {
+                    $model->{$model->getUpdatedByColumn()} = $userId;
+                }
+            }
+        });
     }
 
     protected function getCreatedByColumn(): string

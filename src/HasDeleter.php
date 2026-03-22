@@ -17,24 +17,17 @@ trait HasDeleter
 
     public static function bootHasDeleter(): void
     {
-        $instance = new static;
+        static::deleting(function (Model $model): void {
+            if (method_exists($model, 'runSoftDelete') && Auth::check()) {
+                $userId = Auth::id();
 
-        $instance->trackInclude = ['deleting'];
-        $instance->trackExclude = [];
-
-        if ($instance->shouldTrackEvent('deleting')) {
-            static::deleting(function (Model $model) use ($instance): void {
-                if (method_exists($model, 'runSoftDelete') && Auth::check()) {
-                    $userId = Auth::id();
-
-                    if (! $model->isDirty($instance->getDeletedByColumn())) {
-                        $model->{$instance->getDeletedByColumn()} = $userId;
-                        $model->timestamps = false;
-                        $model->saveQuietly();
-                    }
+                if (! $model->isDirty($model->getDeletedByColumn())) {
+                    $model->{$model->getDeletedByColumn()} = $userId;
+                    $model->timestamps = false;
+                    $model->saveQuietly();
                 }
-            });
-        }
+            }
+        });
     }
 
     protected function getDeletedByColumn(): string
