@@ -19,5 +19,13 @@ class TestModel extends Model
         'updated_by',
     ];
 
-    protected $userModel = TestUser::class;
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->userModel = TestUser::class;
+
+        parent::__construct($attributes);
+    }
 }

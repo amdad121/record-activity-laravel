@@ -7,6 +7,11 @@
 
 created by, updated by and deleted by added on model of your Laravel.
 
+## Requirements
+
+- PHP 8.2, 8.3, 8.4, or 8.5
+- Laravel 11, 12, or 13
+
 ## Installation
 
 You can install the package via composer:

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AmdadulHaq\RecordActivity;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
 trait HasCreatorAndUpdater
@@ -21,7 +22,7 @@ trait HasCreatorAndUpdater
 
     public static function bootHasCreatorAndUpdater(): void
     {
-        static::creating(function (Model $model): void {
+        static::creating(function (self $model): void {
             if (Auth::check()) {
                 $userId = Auth::id();
 
@@ -35,7 +36,7 @@ trait HasCreatorAndUpdater
             }
         });
 
-        static::updating(function (Model $model): void {
+        static::updating(function (self $model): void {
             if (Auth::check()) {
                 $userId = Auth::id();
 
@@ -56,12 +57,18 @@ trait HasCreatorAndUpdater
         return $this->updatedByColumn;
     }
 
-    public function creator()
+    /**
+     * @return BelongsTo<Model, $this>
+     */
+    public function creator(): BelongsTo
     {
         return $this->belongsTo($this->getUserModelClass(), $this->getCreatedByColumn());
     }
 
-    public function updater()
+    /**
+     * @return BelongsTo<Model, $this>
+     */
+    public function updater(): BelongsTo
     {
         return $this->belongsTo($this->getUserModelClass(), $this->getUpdatedByColumn());
     }
