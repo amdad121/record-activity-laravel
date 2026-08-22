@@ -2,6 +2,17 @@
 
 All notable changes to `record-activity-laravel` will be documented in this file.
 
+## v3.1.0 - 2026-08-22
+
+### Added
+- `withCreatorAndUpdater()` and `withDeleter()` now accept an optional `bool $withForeignKey = true` and `string $usersTable = 'users'` argument. Pass `withForeignKey: false` to add the `created_by`/`updated_by`/`deleted_by` columns without a foreign key constraint to `users` — useful when the consuming app's `users.id` type has drifted from `bigint unsigned` (e.g. legacy `int` primary keys) and the constraint would otherwise fail with a MySQL errno 150 ("Foreign key constraint is incorrectly formed") during migration.
+- `dropCreatorAndUpdater()` and `dropDeleter()` now accept a matching `bool $withForeignKey = true` so drop calls stay symmetric with however the columns were added.
+
+### Fixed
+- `withCreatorAndUpdater()`/`withDeleter()` previously used `foreignId(...)->constrained('users')`, which silently assumes `users.id` is `bigint unsigned`. Column creation is now done via `unsignedBigInteger(...)` with the foreign key added as a separate, opt-out step, so the columns and the constraint can be reasoned about independently.
+
+Existing calls to all four macros are unaffected — the new parameters default to the previous behavior.
+
 ## v3.0.0 - 2026-07-21
 
 ### Fixed

@@ -160,3 +160,64 @@ it('creates foreign key constraints withDeleter', function (): void {
     Schema::dropIfExists('test_table');
     Schema::dropIfExists('users');
 });
+
+it('can skip the foreign key constraint withCreatorAndUpdater', function (): void {
+    // No users table at all: proves the columns don't depend on it when the FK is skipped.
+    Schema::dropIfExists('test_table');
+
+    Schema::create('test_table', function (Blueprint $table): void {
+        $table->id();
+        $table->string('name');
+        $table->withCreatorAndUpdater(withForeignKey: false);
+        $table->timestamps();
+    });
+
+    $columns = Schema::getColumnListing('test_table');
+    $foreignKeys = collect(Schema::getForeignKeys('test_table'));
+
+    expect($columns)->toContain('created_by')->toContain('updated_by');
+    expect($foreignKeys)->toHaveCount(0);
+
+    Schema::dropIfExists('test_table');
+});
+
+it('can skip the foreign key constraint withDeleter', function (): void {
+    Schema::dropIfExists('test_table');
+
+    Schema::create('test_table', function (Blueprint $table): void {
+        $table->id();
+        $table->string('name');
+        $table->withDeleter(withForeignKey: false);
+        $table->timestamps();
+    });
+
+    $columns = Schema::getColumnListing('test_table');
+    $foreignKeys = collect(Schema::getForeignKeys('test_table'));
+
+    expect($columns)->toContain('deleted_by');
+    expect($foreignKeys)->toHaveCount(0);
+
+    Schema::dropIfExists('test_table');
+});
+
+it('can drop creator and updater columns added without a foreign key', function (): void {
+    Schema::dropIfExists('test_table');
+
+    Schema::create('test_table', function (Blueprint $table): void {
+        $table->id();
+        $table->string('name');
+        $table->withCreatorAndUpdater(withForeignKey: false);
+        $table->timestamps();
+    });
+
+    Schema::table('test_table', function (Blueprint $table): void {
+        $table->dropCreatorAndUpdater(withForeignKey: false);
+    });
+
+    $columns = Schema::getColumnListing('test_table');
+
+    expect($columns)->not->toContain('created_by')
+        ->not->toContain('updated_by');
+
+    Schema::dropIfExists('test_table');
+});
